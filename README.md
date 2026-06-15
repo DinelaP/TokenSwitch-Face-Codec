@@ -1,34 +1,18 @@
 # Switchable Token-Specific Codebook Quantization for Face Image Compression
 
-**MMS 2025/26 — Image Compression Methods Project**  
-Faculty of Electrical Engineering, University of Sarajevo  
-Course: Multimedia Systems (MMS)
+**MMS 2025/26 — Image Compression Methods**  
+Faculty of Electrical Engineering, University of Sarajevo
 
 ---
 
-## Overview
-
-This repository contains the implementation of the paper:
+This project is part of the MMS 2025/26 course assignment on image compression methods. We implement and evaluate neural image compression models on the ImageNet-1k dataset, based on the paper:
 
 > **Switchable Token-Specific Codebook Quantization For Face Image Compression**  
-> Yongbo Wang, Haonan Wang, Guodong Mu, et al.  
-> *NeurIPS 2025*  
-> [Paper (OpenReview)](https://openreview.net/pdf?id=8AtYSW3VdX)
+> Wang et al., NeurIPS 2025 · [Paper](https://openreview.net/pdf?id=8AtYSW3VdX) · [arXiv](https://arxiv.org/abs/2510.22943)
 
-The method addresses a key bottleneck in VQ-VAE-style image compression: all tokens share a single global codebook. This work introduces a **hierarchical, switchable codebook** mechanism that assigns distinct codebook groups per image category and an independent sub-codebook per token, improving reconstruction quality at ultra-low bitrates (bpp).
+The paper proposes a hierarchical codebook quantization mechanism that assigns distinct codebook groups per image category and an independent sub-codebook per token, significantly improving reconstruction quality at ultra-low bitrates compared to standard VQ-VAE approaches. Since the authors did not release official code, this implementation uses [`compressai`](https://github.com/InterDigitalInc/CompressAI) baseline models as comparison points and evaluates them on ImageNet-1k val using the same metrics as the paper.
 
 ---
-
-## Method Summary
-
-Standard codebook-based compression uses a single shared codebook of size *N*, costing `T × ⌈log₂N⌉` bits for *T* tokens. This work replaces it with:
-
-- **Image-level routing** — a routing module selects one of *M* codebook groups based on image category/attributes (e.g., gender, age, ethnicity in face images).
-- **Token-level assignment** — within the selected group, each of the *T* tokens is assigned its own sub-codebook of size *K*.
-- **Reduced storage cost** — `T × ⌈log₂K⌉ + ⌈log₂M⌉` bits, enabling larger total codebook capacity at the same or lower bpp.
-
-The module is **plug-and-play** and can be integrated into any existing codebook-based compression framework (e.g., TiTok, VQ-VAE).
-
 
 ## Repository Structure
 
@@ -81,7 +65,7 @@ imagenet_val/
 | Model Name        | Paper                         | Quality Levels |
 |-------------------|-------------------------------|----------------|
 | `factorized-qN`   | Ballé et al. 2017 (baseline)  | 1, 3, 5, 8     |
-| `hyperprior-qN`   | Ballé et al. **2018** (main)  | 1, 3, 5, 8     |
+| `hyperprior-qN`   | Ballé et al. 2018 (main)      | 1, 3, 5, 8     |
 | `mbt2018-qN`      | Minnen et al. 2018            | 3, 5, 8        |
 | `cheng2020-qN`    | Cheng et al. 2020             | 3, 6           |
 
@@ -89,12 +73,12 @@ imagenet_val/
 
 ## Metrics
 
-| Metric   | Range      | Better | Meaning                                      |
-|----------|------------|--------|----------------------------------------------|
-| PSNR     | 20–50 dB   | Higher | Pixel-level reconstruction fidelity          |
-| MS-SSIM  | 0–1        | Higher | Perceptual quality (luminance, contrast, structure) |
-| bpp      | 0.1–2.0    | Lower  | Compression ratio (bits per pixel)           |
-| BD-Rate  | % (±)      | Lower  | Bit-rate saving vs. anchor at same quality   |
+| Metric   | Range      | Better | Meaning                                           |
+|----------|------------|--------|---------------------------------------------------|
+| PSNR     | 20–50 dB   | Higher | Pixel-level reconstruction fidelity               |
+| MS-SSIM  | 0–1        | Higher | Perceptual quality (luminance, contrast, structure)|
+| bpp      | 0.1–2.0    | Lower  | Compression ratio (bits per pixel)                |
+| BD-Rate  | % (±)      | Lower  | Bit-rate saving vs. anchor at same quality        |
 
 ---
 
@@ -122,3 +106,7 @@ numpy
 Pillow
 matplotlib
 ```
+
+---
+
+**Supervisor:** vhasic1@etf.unsa.ba  
